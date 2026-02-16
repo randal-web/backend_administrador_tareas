@@ -1,0 +1,44 @@
+import dotenv from 'dotenv';
+dotenv.config();
+
+export const config = {
+  port: parseInt(process.env.PORT || '4000', 10),
+  nodeEnv: process.env.NODE_ENV || 'development',
+
+  // Railway provides DATABASE_URL automatically
+  databaseUrl: process.env.DATABASE_URL || '',
+
+  db: {
+    host: process.env.DB_HOST || 'localhost',
+    port: parseInt(process.env.DB_PORT || '5432', 10),
+    name: process.env.DB_NAME || 'task_manager',
+    user: process.env.DB_USER || 'postgres',
+    password: process.env.DB_PASSWORD || 'postgres',
+  },
+
+  jwt: {
+    secret: process.env.JWT_SECRET || 'fallback_secret',
+    expiresIn: process.env.JWT_EXPIRES_IN || '7d',
+  },
+
+  smtp: {
+    host: process.env.SMTP_HOST || 'smtp.gmail.com',
+    port: parseInt(process.env.SMTP_PORT || '587', 10),
+    user: process.env.SMTP_USER || '',
+    pass: process.env.SMTP_PASS || '',
+  },
+
+  google: {
+    clientId: process.env.GOOGLE_CLIENT_ID || '',
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
+    callbackUrl: process.env.GOOGLE_CALLBACK_URL || 'http://localhost:4000/api/auth/google/callback',
+  },
+
+  outlook: {
+    clientId: process.env.OUTLOOK_CLIENT_ID || '',
+    clientSecret: process.env.OUTLOOK_CLIENT_SECRET || '',
+    callbackUrl: process.env.OUTLOOK_CALLBACK_URL || 'http://localhost:4000/api/auth/outlook/callback',
+  },
+
+  frontendUrl: process.env.FRONTEND_URL || 'http://localhost:3000',
+};
