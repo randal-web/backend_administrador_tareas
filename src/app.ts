@@ -41,8 +41,13 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization'],
 }));
 
-// Security headers
-app.use(helmet());
+// Security headers (configured for cross-origin API)
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: 'cross-origin' },
+  crossOriginOpenerPolicy: { policy: 'unsafe-none' },
+  crossOriginEmbedderPolicy: false,
+  contentSecurityPolicy: false,
+}));
 
 // Compression
 app.use(compression());
