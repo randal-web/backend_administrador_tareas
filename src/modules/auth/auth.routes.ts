@@ -24,7 +24,7 @@ router.put('/profile', authMiddleware as RequestHandler, AuthController.updatePr
 router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 router.get(
   '/google/callback',
-  passport.authenticate('google', { session: false, failureRedirect: `${config.frontendUrl}/login` }),
+  passport.authenticate('google', { session: false, failureRedirect: `${config.frontendUrl}/login?error=oauth_failed` }),
   async (req: any, res) => {
     try {
       const result = await AuthService.findOrCreateOAuthUser({
@@ -35,14 +35,8 @@ router.get(
         providerId: req.user.id,
       });
 
-      res.cookie('token', result.token, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'lax',
-        maxAge: 7 * 24 * 60 * 60 * 1000,
-      });
-
-      res.redirect(`${config.frontendUrl}/dashboard`);
+      // Redirect to frontend with token in URL (cross-domain safe)
+      res.redirect(`${config.frontendUrl}/auth/callback?token=${result.token}`);
     } catch {
       res.redirect(`${config.frontendUrl}/login?error=oauth_failed`);
     }
@@ -53,7 +47,7 @@ router.get(
 router.get('/outlook', passport.authenticate('windowslive', { scope: ['openid', 'profile', 'offline_access', 'https://outlook.office.com/Mail.Read'] }));
 router.get(
   '/outlook/callback',
-  passport.authenticate('windowslive', { session: false, failureRedirect: `${config.frontendUrl}/login` }),
+  passport.authenticate('windowslive', { session: false, failureRedirect: `${config.frontendUrl}/login?error=oauth_failed` }),
   async (req: any, res) => {
     try {
       const result = await AuthService.findOrCreateOAuthUser({
@@ -63,14 +57,7 @@ router.get(
         providerId: req.user.id,
       });
 
-      res.cookie('token', result.token, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'lax',
-        maxAge: 7 * 24 * 60 * 60 * 1000,
-      });
-
-      res.redirect(`${config.frontendUrl}/dashboard`);
+      res.redirect(`${config.frontendUrl}/auth/callback?token=${result.token}`);
     } catch {
       res.redirect(`${config.frontendUrl}/login?error=oauth_failed`);
     }

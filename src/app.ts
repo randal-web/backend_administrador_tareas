@@ -58,7 +58,7 @@ app.use(morgan(config.nodeEnv === 'production' ? 'combined' : 'dev'));
 // Rate limiting
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 min
-  limit: config.nodeEnv === 'production' ? 100 : 1000,
+  limit: config.nodeEnv === 'production' ? 500 : 1000,
   standardHeaders: 'draft-8',
   legacyHeaders: false,
   message: { error: 'Demasiadas peticiones, intenta de nuevo más tarde.' },
@@ -68,7 +68,7 @@ app.use('/api/', limiter);
 // Auth-specific stricter rate limit
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  limit: config.nodeEnv === 'production' ? 20 : 200,
+  limit: config.nodeEnv === 'production' ? 100 : 200,
   standardHeaders: 'draft-8',
   legacyHeaders: false,
   message: { error: 'Demasiados intentos de autenticación, intenta de nuevo más tarde.' },

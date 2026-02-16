@@ -1,7 +1,7 @@
 import bcryptjs from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
-import nodemailer from 'nodemailer';
+import { Resend } from 'resend';
 import { config } from '../../config';
 import { User } from './user.model';
 
@@ -95,21 +95,13 @@ export class AuthService {
 
     const resetUrl = `${config.frontendUrl}/reset-password?token=${resetJwt}`;
 
-    if (config.smtp.user && config.smtp.pass) {
-      const transporter = nodemailer.createTransport({
-        host: config.smtp.host,
-        port: config.smtp.port,
-        secure: false,
-        auth: {
-          user: config.smtp.user,
-          pass: config.smtp.pass,
-        },
-      });
+    if (config.resendApiKey) {
+      const resend = new Resend(config.resendApiKey);
 
-      await transporter.sendMail({
-        from: config.smtp.user,
+      await resend.emails.send({
+        from: config.resendFrom,
         to: email,
-        subject: 'Recuperación de contraseña - Administrador de Tareas',
+        subject: 'Recuperación de contraseña - TaskFlow',
         html: `
           <h2>Recuperar contraseña</h2>
           <p>Haz clic en el siguiente enlace para restablecer tu contraseña:</p>
