@@ -30,11 +30,5 @@ export const config = {
     callbackUrl: process.env.GOOGLE_CALLBACK_URL || 'http://localhost:4000/api/auth/google/callback',
   },
 
-  outlook: {
-    clientId: process.env.OUTLOOK_CLIENT_ID || '',
-    clientSecret: process.env.OUTLOOK_CLIENT_SECRET || '',
-    callbackUrl: process.env.OUTLOOK_CALLBACK_URL || 'http://localhost:4000/api/auth/outlook/callback',
-  },
-
   frontendUrl: process.env.FRONTEND_URL || 'http://localhost:3000',
 };

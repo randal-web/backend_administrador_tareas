@@ -44,9 +44,6 @@ importers:
       passport-google-oauth20:
         specifier: ^2.0.0
         version: 2.0.0
-      passport-outlook:
-        specifier: ^3.0.0
-        version: 3.0.0
       pg:
         specifier: ^8.18.0
         version: 8.18.0
@@ -802,10 +799,6 @@ packages:
   passport-oauth2@1.8.0:
     resolution: {integrity: sha512-cjsQbOrXIDE4P8nNb3FQRCCmJJ/utnFKEz2NX209f7KOHPoX18gF7gBzBbLLsj2/je4KrgiwLLGjf0lm9rtTBA==}
     engines: {node: '>= 0.4.0'}
-
-  passport-outlook@3.0.0:
-    resolution: {integrity: sha512-H3U+LCCd9mxnkheKduog/P6Nyh2rAd7X3LXwlmiQVgbA2FmTOE3OR0B+kCBQPjELOERnzoniuqrVr4RUIxhnHA==}
-    engines: {node: '>= 10.0.0'}
 
   passport-strategy@1.0.0:
     resolution: {integrity: sha512-CB97UUvDKJde2V0KDWWB3lyf6PC3FaZP7YxZ2G8OAtn9p4HI9j9JLP9qjOGZFvyl8uwNT8qM+hGnz/n16NI7oA==}
@@ -1785,10 +1778,6 @@ snapshots:
       passport-strategy: 1.0.0
       uid2: 0.0.4
       utils-merge: 1.0.1
-
-  passport-outlook@3.0.0:
-    dependencies:
-      passport-oauth2: 1.8.0
 
   passport-strategy@1.0.0: {}
 

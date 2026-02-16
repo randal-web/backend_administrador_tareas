@@ -43,25 +43,4 @@ router.get(
   }
 );
 
-// Outlook OAuth
-router.get('/outlook', passport.authenticate('windowslive', { scope: ['openid', 'profile', 'offline_access', 'https://outlook.office.com/Mail.Read'] }));
-router.get(
-  '/outlook/callback',
-  passport.authenticate('windowslive', { session: false, failureRedirect: `${config.frontendUrl}/login?error=oauth_failed` }),
-  async (req: any, res) => {
-    try {
-      const result = await AuthService.findOrCreateOAuthUser({
-        email: req.user.emails[0].value,
-        fullName: req.user.displayName,
-        provider: 'outlook',
-        providerId: req.user.id,
-      });
-
-      res.redirect(`${config.frontendUrl}/auth/callback?token=${result.token}`);
-    } catch {
-      res.redirect(`${config.frontendUrl}/login?error=oauth_failed`);
-    }
-  }
-);
-
 export default router;
