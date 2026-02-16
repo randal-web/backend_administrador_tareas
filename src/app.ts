@@ -21,6 +21,26 @@ const app: Application = express();
 // Trust proxy (Railway runs behind a proxy)
 app.set('trust proxy', 1);
 
+// CORS — Frontend (Vercel) and Backend (Railway) are on different domains
+// Must be BEFORE helmet so preflight OPTIONS requests are handled correctly
+const allowedOrigins = config.nodeEnv === 'production'
+  ? [config.frontendUrl]
+  : [config.frontendUrl, 'http://localhost:3000', 'http://localhost:3001'];
+
+app.use(cors({
+  origin: (origin, callback) => {
+    // Allow requests with no origin (mobile apps, Postman, etc.)
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+}));
+
 // Security headers
 app.use(helmet());
 
@@ -49,24 +69,6 @@ const authLimiter = rateLimit({
   message: { error: 'Demasiados intentos de autenticación, intenta de nuevo más tarde.' },
 });
 
-// CORS — Frontend (Vercel) and Backend (Railway) are on different domains
-const allowedOrigins = config.nodeEnv === 'production'
-  ? [config.frontendUrl]
-  : [config.frontendUrl, 'http://localhost:3000', 'http://localhost:3001'];
-
-app.use(cors({
-  origin: (origin, callback) => {
-    // Allow requests with no origin (mobile apps, Postman, etc.)
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-}));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -86,6 +88,8 @@ app.get('/api/health', (_req, res) => {
   res.json({
     status: 'ok',
     environment: config.nodeEnv,
+    frontendUrl: config.frontendUrl,
+    allowedOrigins,
     timestamp: new Date().toISOString(),
   });
 });
