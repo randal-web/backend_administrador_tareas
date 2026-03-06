@@ -59,15 +59,26 @@ export class TaskService {
   static async getUpcoming(userId: string, fromDate: string, days: number = 7) {
     const toDate = new Date(fromDate);
     toDate.setDate(toDate.getDate() + days);
+    const toDateStr = toDate.toISOString().split('T')[0];
 
     return Task.findAll({
       where: {
         user_id: userId,
-        start_date: {
-          [Op.gt]: fromDate,
-          [Op.lte]: toDate.toISOString().split('T')[0],
-        },
         status: { [Op.ne]: 'DONE' },
+        [Op.or]: [
+          // Tasks that start in the upcoming range
+          {
+            start_date: {
+              [Op.gt]: fromDate,
+              [Op.lte]: toDateStr,
+            },
+          },
+          // Tasks that started before but end within or after the range
+          {
+            start_date: { [Op.lte]: toDateStr },
+            end_date: { [Op.gt]: fromDate },
+          },
+        ],
       },
       include: [
         { model: Subtask, as: 'subtasks' },

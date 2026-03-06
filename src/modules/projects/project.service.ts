@@ -27,8 +27,10 @@ export class ProjectService {
         const doneTasks = await Task.count({ where: { project_id: project.id, status: 'DONE' } });
         const pendingTasks = totalTasks - doneTasks;
 
+        const json = project.toJSON();
         return {
-          ...project.toJSON(),
+          ...json,
+          created_at: json.created_at || (json as unknown as Record<string, unknown>).createdAt,
           total_tasks: totalTasks,
           done_tasks: doneTasks,
           pending_tasks: pendingTasks,
