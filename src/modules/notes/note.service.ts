@@ -51,4 +51,18 @@ export class NoteService {
     await note.update({ is_pinned: !note.is_pinned });
     return note;
   }
+
+  static async toggleImportant(noteId: string, userId: string) {
+    const note = await Note.findOne({ where: { id: noteId, user_id: userId } });
+    if (!note) throw new Error('Nota no encontrada');
+    await note.update({ is_important: !note.is_important });
+    return note;
+  }
+
+  static async getImportant(userId: string) {
+    return Note.findAll({
+      where: { user_id: userId, is_important: true },
+      order: [['updated_at', 'DESC']],
+    });
+  }
 }

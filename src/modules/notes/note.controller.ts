@@ -59,4 +59,22 @@ export class NoteController {
       res.status(400).json({ message: error.message });
     }
   }
+
+  static async toggleImportant(req: Request, res: Response): Promise<void> {
+    try {
+      const note = await NoteService.toggleImportant(req.params.id, req.user!.id);
+      res.json(note);
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  }
+
+  static async getImportant(req: Request, res: Response): Promise<void> {
+    try {
+      const notes = await NoteService.getImportant(req.user!.id);
+      res.json(notes);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  }
 }

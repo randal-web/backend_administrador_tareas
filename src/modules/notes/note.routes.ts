@@ -8,9 +8,11 @@ router.use(authMiddleware as RequestHandler);
 
 router.post('/', NoteController.create as RequestHandler);
 router.get('/', NoteController.getAll as RequestHandler);
+router.get('/important', NoteController.getImportant as RequestHandler);
 router.get('/:id', NoteController.getById as RequestHandler);
 router.put('/:id', NoteController.update as RequestHandler);
 router.delete('/:id', NoteController.delete as RequestHandler);
 router.patch('/:id/pin', NoteController.togglePin as RequestHandler);
+router.patch('/:id/important', NoteController.toggleImportant as RequestHandler);
 
 export default router;

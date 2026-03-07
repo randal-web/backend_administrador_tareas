@@ -10,12 +10,13 @@ export interface NoteAttributes {
   content: string | null;
   color: NoteColor;
   is_pinned: boolean;
+  is_important: boolean;
   created_at?: Date;
   updated_at?: Date;
 }
 
 export interface NoteCreationAttributes
-  extends Optional<NoteAttributes, 'id' | 'content' | 'color' | 'is_pinned' | 'created_at' | 'updated_at'> {}
+  extends Optional<NoteAttributes, 'id' | 'content' | 'color' | 'is_pinned' | 'is_important' | 'created_at' | 'updated_at'> {}
 
 export class Note extends Model<NoteAttributes, NoteCreationAttributes> implements NoteAttributes {
   public id!: string;
@@ -24,6 +25,7 @@ export class Note extends Model<NoteAttributes, NoteCreationAttributes> implemen
   public content!: string | null;
   public color!: NoteColor;
   public is_pinned!: boolean;
+  public is_important!: boolean;
   public readonly created_at!: Date;
   public readonly updated_at!: Date;
 }
@@ -55,6 +57,11 @@ Note.init(
       defaultValue: 'yellow',
     },
     is_pinned: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
+    },
+    is_important: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
       defaultValue: false,
