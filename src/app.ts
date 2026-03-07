@@ -16,6 +16,8 @@ import taskRoutes from './modules/tasks/task.routes';
 import projectRoutes from './modules/projects/project.routes';
 import habitRoutes from './modules/habits/habit.routes';
 import noteRoutes from './modules/notes/note.routes';
+import reminderRoutes from './modules/reminders/reminder.routes';
+import notificationRoutes from './modules/notifications/notification.routes';
 
 const app: Application = express();
 
@@ -89,6 +91,8 @@ app.use('/api/tasks', taskRoutes);
 app.use('/api/projects', projectRoutes);
 app.use('/api/habits', habitRoutes);
 app.use('/api/notes', noteRoutes);
+app.use('/api/reminders', reminderRoutes);
+app.use('/api/notifications', notificationRoutes);
 
 // Health check
 app.get('/api/health', (_req, res) => {

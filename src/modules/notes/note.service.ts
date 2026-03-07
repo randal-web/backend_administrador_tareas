@@ -2,10 +2,13 @@ import { Note, NoteCreationAttributes } from './note.model';
 
 export class NoteService {
   static async create(userId: string, data: Partial<NoteCreationAttributes>) {
+    if (data.title == null) {
+      throw new Error('El título de la nota es obligatorio');
+    }
     const note = await Note.create({
       ...data,
       user_id: userId,
-      title: data.title!,
+      title: data.title,
     });
     return note;
   }

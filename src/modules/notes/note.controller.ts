@@ -25,7 +25,11 @@ export class NoteController {
       const note = await NoteService.getById(req.params.id, req.user!.id);
       res.json(note);
     } catch (error: any) {
-      res.status(404).json({ message: error.message });
+      if (error?.status === 404 || error?.name === 'NotFoundError') {
+        res.status(404).json({ message: error.message });
+      } else {
+        res.status(500).json({ message: error.message });
+      }
     }
   }
 
