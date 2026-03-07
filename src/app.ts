@@ -98,9 +98,6 @@ app.use('/api/notifications', notificationRoutes);
 app.get('/api/health', (_req, res) => {
   res.json({
     status: 'ok',
-    environment: config.nodeEnv,
-    frontendUrl: config.frontendUrl,
-    allowedOrigins,
     timestamp: new Date().toISOString(),
   });
 });

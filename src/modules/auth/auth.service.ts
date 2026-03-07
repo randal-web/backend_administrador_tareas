@@ -31,7 +31,7 @@ export class AuthService {
   }
 
   static async login(email: string, password: string) {
-    const user = await User.findOne({ where: { email } });
+    const user = await User.scope('withPassword').findOne({ where: { email } });
     if (!user || !user.password_hash) {
       throw new Error('Credenciales inválidas');
     }
