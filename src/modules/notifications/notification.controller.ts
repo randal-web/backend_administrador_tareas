@@ -22,7 +22,7 @@ export class NotificationController {
 
   static async markAsRead(req: Request, res: Response): Promise<void> {
     try {
-      const notification = await NotificationService.markAsRead(req.params.id, req.user!.id);
+      const notification = await NotificationService.markAsRead(req.params.id as string, req.user!.id);
       res.json(notification);
     } catch (error: any) {
       res.status(404).json({ message: error.message });
@@ -40,7 +40,7 @@ export class NotificationController {
 
   static async delete(req: Request, res: Response): Promise<void> {
     try {
-      const result = await NotificationService.delete(req.params.id, req.user!.id);
+      const result = await NotificationService.delete(req.params.id as string, req.user!.id);
       res.json(result);
     } catch (error: any) {
       res.status(404).json({ message: error.message });

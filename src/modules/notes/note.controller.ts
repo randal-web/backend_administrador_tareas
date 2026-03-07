@@ -22,7 +22,7 @@ export class NoteController {
 
   static async getById(req: Request, res: Response): Promise<void> {
     try {
-      const note = await NoteService.getById(req.params.id, req.user!.id);
+      const note = await NoteService.getById(req.params.id as string, req.user!.id);
       res.json(note);
     } catch (error: any) {
       if (error?.status === 404 || error?.name === 'NotFoundError') {
@@ -35,7 +35,7 @@ export class NoteController {
 
   static async update(req: Request, res: Response): Promise<void> {
     try {
-      const note = await NoteService.update(req.params.id, req.user!.id, req.body);
+      const note = await NoteService.update(req.params.id as string, req.user!.id, req.body);
       res.json(note);
     } catch (error: any) {
       res.status(400).json({ message: error.message });
@@ -44,7 +44,7 @@ export class NoteController {
 
   static async delete(req: Request, res: Response): Promise<void> {
     try {
-      const result = await NoteService.delete(req.params.id, req.user!.id);
+      const result = await NoteService.delete(req.params.id as string, req.user!.id);
       res.json(result);
     } catch (error: any) {
       res.status(404).json({ message: error.message });
@@ -53,7 +53,7 @@ export class NoteController {
 
   static async togglePin(req: Request, res: Response): Promise<void> {
     try {
-      const note = await NoteService.togglePin(req.params.id, req.user!.id);
+      const note = await NoteService.togglePin(req.params.id as string, req.user!.id);
       res.json(note);
     } catch (error: any) {
       res.status(400).json({ message: error.message });
@@ -62,7 +62,7 @@ export class NoteController {
 
   static async toggleImportant(req: Request, res: Response): Promise<void> {
     try {
-      const note = await NoteService.toggleImportant(req.params.id, req.user!.id);
+      const note = await NoteService.toggleImportant(req.params.id as string, req.user!.id);
       res.json(note);
     } catch (error: any) {
       res.status(400).json({ message: error.message });

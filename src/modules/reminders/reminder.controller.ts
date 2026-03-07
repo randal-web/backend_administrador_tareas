@@ -31,7 +31,7 @@ export class ReminderController {
 
   static async getById(req: Request, res: Response): Promise<void> {
     try {
-      const reminder = await ReminderService.getById(req.params.id, req.user!.id);
+      const reminder = await ReminderService.getById(req.params.id as string, req.user!.id);
       res.json(reminder);
     } catch (error: any) {
       res.status(404).json({ message: error.message });
@@ -40,7 +40,7 @@ export class ReminderController {
 
   static async update(req: Request, res: Response): Promise<void> {
     try {
-      const reminder = await ReminderService.update(req.params.id, req.user!.id, req.body);
+      const reminder = await ReminderService.update(req.params.id as string, req.user!.id, req.body);
       res.json(reminder);
     } catch (error: any) {
       res.status(400).json({ message: error.message });
@@ -49,7 +49,7 @@ export class ReminderController {
 
   static async delete(req: Request, res: Response): Promise<void> {
     try {
-      const result = await ReminderService.delete(req.params.id, req.user!.id);
+      const result = await ReminderService.delete(req.params.id as string, req.user!.id);
       res.json(result);
     } catch (error: any) {
       res.status(404).json({ message: error.message });
@@ -58,7 +58,7 @@ export class ReminderController {
 
   static async toggleComplete(req: Request, res: Response): Promise<void> {
     try {
-      const reminder = await ReminderService.toggleComplete(req.params.id, req.user!.id);
+      const reminder = await ReminderService.toggleComplete(req.params.id as string, req.user!.id);
       res.json(reminder);
     } catch (error: any) {
       res.status(400).json({ message: error.message });
