@@ -5,6 +5,7 @@ import { Subtask } from '../modules/tasks/subtask.model';
 import { TaskComment } from '../modules/tasks/task-comment.model';
 import { Habit } from '../modules/habits/habit.model';
 import { HabitLog } from '../modules/habits/habit-log.model';
+import { Note } from '../modules/notes/note.model';
 
 export function setupAssociations(): void {
   // User -> Projects
@@ -38,6 +39,10 @@ export function setupAssociations(): void {
   // Habit -> HabitLogs
   Habit.hasMany(HabitLog, { foreignKey: 'habit_id', as: 'logs' });
   HabitLog.belongsTo(Habit, { foreignKey: 'habit_id', as: 'habit' });
+
+  // User -> Notes
+  User.hasMany(Note, { foreignKey: 'user_id', as: 'notes' });
+  Note.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
 }
 
-export { User, Project, Task, Subtask, TaskComment, Habit, HabitLog };
+export { User, Project, Task, Subtask, TaskComment, Habit, HabitLog, Note };
