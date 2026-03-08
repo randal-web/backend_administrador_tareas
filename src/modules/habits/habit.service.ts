@@ -45,14 +45,21 @@ export class HabitService {
 
   // Get habits with their logs for the current week
   static async getWeeklyHabits(userId: string, weekStartDate?: string) {
-    const now = new Date();
-    // Get Monday of current week
-    const startOfWeek = weekStartDate
-      ? new Date(weekStartDate)
-      : new Date(now.setDate(now.getDate() - now.getDay() + 1));
+    let startOfWeek: Date;
+
+    if (weekStartDate) {
+      startOfWeek = new Date(weekStartDate + 'T00:00:00');
+    } else {
+      const now = new Date();
+      const day = now.getDay(); // 0 (Sun) to 6 (Sat)
+      const diff = now.getDate() - day + (day === 0 ? -6 : 1);
+      startOfWeek = new Date(now.setDate(diff));
+      startOfWeek.setHours(0, 0, 0, 0);
+    }
 
     const endOfWeek = new Date(startOfWeek);
     endOfWeek.setDate(endOfWeek.getDate() + 6);
+    endOfWeek.setHours(23, 59, 59, 999);
 
     const startStr = startOfWeek.toISOString().split('T')[0];
     const endStr = endOfWeek.toISOString().split('T')[0];
