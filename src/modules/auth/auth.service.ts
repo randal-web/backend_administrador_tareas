@@ -141,6 +141,14 @@ export class AuthService {
   static async updateProfile(userId: string, data: { full_name?: string; avatar_url?: string }) {
     const user = await User.findByPk(userId);
     if (!user) throw new Error('Usuario no encontrado');
+    if (data.avatar_url) {
+      const cloudName = process.env.CLOUDINARY_CLOUD_NAME || 'tu_cloud_name';
+      const url = data.avatar_url;
+      const validPrefix = `https://res.cloudinary.com/${cloudName}/`;
+      if (!url.startsWith(validPrefix)) {
+        throw new Error('URL de avatar inválida');
+      }
+    }
     await user.update(data);
     return this.sanitizeUser(user);
   }
