@@ -49,104 +49,113 @@ export class NotificationService {
   static async generate(userId: string) {
     const now = new Date();
     const hour = now.getHours();
-    const today = now.toISOString().split('T')[0]; // YYYY-MM-DD
-
+    
+    // Create local date string (YYYY-MM-DD)
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    const todayStr = `${year}-${month}-${day}`;
+    
     const created: Notification[] = [];
 
-    // Morning (9 AM): tasks & reminders for today
+    // --- MORNING (9 AM onwards) ---
     if (hour >= 9) {
-      const alreadyMorning = await Notification.findOne({
+      // 1. Individual Task Notifications
+      const tasks = await Task.findAll({
         where: {
           user_id: userId,
-          type: 'morning_tasks',
-          created_at: { [Op.gte]: new Date(`${today}T00:00:00`) },
+          status: { [Op.in]: ['TODO', 'IN_PROGRESS', 'REVIEW'] },
+          [Op.or]: [
+            { start_date: { [Op.lte]: todayStr } },
+            { end_date: todayStr },
+          ],
         },
       });
 
-      if (!alreadyMorning) {
-        // Today's tasks (not done)
-        const tasks = await Task.findAll({
-          where: {
-            user_id: userId,
-            status: { [Op.in]: ['TODO', 'IN_PROGRESS', 'REVIEW'] },
-            [Op.or]: [
-              { start_date: { [Op.lte]: today } },
-              { end_date: today },
-            ],
-          },
-        });
-
-        if (tasks.length > 0) {
-          const taskLines = tasks.slice(0, 5).map(t => `• ${t.title}`).join('\n');
-          const extra = tasks.length > 5 ? `\n...y ${tasks.length - 5} más` : '';
+      for (const t of tasks) {
+        const refId = `task_morning_${t.id}_${todayStr}`;
+        const exists = await Notification.findOne({ where: { user_id: userId, reference_id: refId } });
+        
+        if (!exists) {
           const n = await Notification.create({
             user_id: userId,
-            title: `🌅 Buenos días — ${tasks.length} tarea${tasks.length !== 1 ? 's' : ''} para hoy`,
-            message: `${taskLines}${extra}`,
-            type: 'morning_tasks',
+            title: `📌 Tarea para hoy`,
+            message: t.title,
+            type: 'task_due',
+            reference_id: refId,
+            reference_type: 'task'
           });
           created.push(n);
         }
+      }
 
-        // Today's reminders
-        const reminders = await Reminder.findAll({
-          where: { user_id: userId, due_date: today, is_completed: false },
-        });
+      // 2. Individual Reminder Notifications
+      const reminders = await Reminder.findAll({
+        where: { user_id: userId, due_date: todayStr, is_completed: false },
+      });
 
-        if (reminders.length > 0) {
-          const lines = reminders.slice(0, 5).map(r => `• ${r.title}${r.due_time ? ` (${r.due_time})` : ''}`).join('\n');
-          const extra = reminders.length > 5 ? `\n...y ${reminders.length - 5} más` : '';
+      for (const r of reminders) {
+        const refId = `rem_morning_${r.id}_${todayStr}`;
+        const exists = await Notification.findOne({ where: { user_id: userId, reference_id: refId } });
+
+        if (!exists) {
           const n = await Notification.create({
             user_id: userId,
-            title: `📋 ${reminders.length} pendiente${reminders.length !== 1 ? 's' : ''} para hoy`,
-            message: `${lines}${extra}`,
-            type: 'morning_reminders',
+            title: `🔔 Recordatorio`,
+            message: `${r.title}${r.due_time ? ` (${r.due_time})` : ''}`,
+            type: 'reminder_due',
+            reference_id: refId,
+            reference_type: 'reminder'
           });
           created.push(n);
         }
       }
     }
 
-    // Evening (10 PM): pending tasks & reminders still incomplete
-    if (hour >= 22) {
-      const alreadyEvening = await Notification.findOne({
+    // --- EVENING (8 PM onwards) ---
+    if (hour >= 20) {
+      const pendingTasks = await Task.findAll({
         where: {
           user_id: userId,
-          type: 'evening_pending',
-          created_at: { [Op.gte]: new Date(`${today}T00:00:00`) },
+          status: { [Op.in]: ['TODO', 'IN_PROGRESS', 'REVIEW'] },
+          [Op.or]: [
+            { start_date: { [Op.lte]: todayStr } },
+            { end_date: todayStr },
+          ],
         },
       });
 
-      if (!alreadyEvening) {
-        const pendingTasks = await Task.findAll({
-          where: {
+      const pendingReminders = await Reminder.findAll({
+        where: { user_id: userId, due_date: todayStr, is_completed: false },
+      });
+
+      for (const t of pendingTasks) {
+        const refId = `task_evening_${t.id}_${todayStr}`;
+        const exists = await Notification.findOne({ where: { user_id: userId, reference_id: refId } });
+        if (!exists) {
+          await Notification.create({
             user_id: userId,
-            status: { [Op.in]: ['TODO', 'IN_PROGRESS', 'REVIEW'] },
-            [Op.or]: [
-              { start_date: { [Op.lte]: today } },
-              { end_date: today },
-            ],
-          },
-        });
-
-        const pendingReminders = await Reminder.findAll({
-          where: { user_id: userId, due_date: today, is_completed: false },
-        });
-
-        const total = pendingTasks.length + pendingReminders.length;
-        if (total > 0) {
-          const lines: string[] = [];
-          pendingTasks.slice(0, 3).forEach(t => lines.push(`• Tarea: ${t.title}`));
-          pendingReminders.slice(0, 3).forEach(r => lines.push(`• Pendiente: ${r.title}`));
-          const extra = total > 6 ? `\n...y ${total - 6} más` : '';
-
-          const n = await Notification.create({
-            user_id: userId,
-            title: `🌙 Fin del día — ${total} elemento${total !== 1 ? 's' : ''} sin completar`,
-            message: `${lines.join('\n')}${extra}`,
+            title: `🌙 Tarea pendiente`,
+            message: `No olvides terminar: ${t.title}`,
             type: 'evening_pending',
+            reference_id: refId,
+            reference_type: 'task'
           });
-          created.push(n);
+        }
+      }
+
+      for (const r of pendingReminders) {
+        const refId = `rem_evening_${r.id}_${todayStr}`;
+        const exists = await Notification.findOne({ where: { user_id: userId, reference_id: refId } });
+        if (!exists) {
+          await Notification.create({
+            user_id: userId,
+            title: `🌙 Pendiente`,
+            message: `Aún no has completado: ${r.title}`,
+            type: 'evening_pending',
+            reference_id: refId,
+            reference_type: 'reminder'
+          });
         }
       }
     }

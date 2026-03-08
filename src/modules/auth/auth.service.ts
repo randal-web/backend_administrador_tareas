@@ -153,14 +153,14 @@ export class AuthService {
     return this.sanitizeUser(user);
   }
 
-  private static sanitizeUser(user: User) {
+  private static sanitizeUser(user: any) {
     return {
       id: user.id,
       email: user.email,
       full_name: user.full_name,
       avatar_url: user.avatar_url,
       provider: user.provider,
-      created_at: user.created_at,
+      created_at: user.created_at || user.createdAt,
     };
   }
 }
