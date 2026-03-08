@@ -54,7 +54,7 @@ export class NotificationService {
     const created: Notification[] = [];
 
     // Morning (9 AM): tasks & reminders for today
-    if (hour >= 9 && hour < 12) {
+    if (hour >= 9) {
       const alreadyMorning = await Notification.findOne({
         where: {
           user_id: userId,
@@ -107,8 +107,8 @@ export class NotificationService {
       }
     }
 
-    // Evening (11 PM): pending tasks & reminders still incomplete
-    if (hour >= 23) {
+    // Evening (10 PM): pending tasks & reminders still incomplete
+    if (hour >= 22) {
       const alreadyEvening = await Notification.findOne({
         where: {
           user_id: userId,
