@@ -180,11 +180,21 @@ export class TaskService {
 
   // Comments
   static async addComment(taskId: string, userId: string, content: string) {
-    const task = await Task.findOne({ where: { id: taskId, user_id: userId } });
+    const task = await Task.findOne({ where: { id: taskId } });
     if (!task) throw new Error('Tarea no encontrada');
 
     const comment = await TaskComment.create({ task_id: taskId, user_id: userId, content });
-    return comment;
+    // Recuperar el comentario con el usuario asociado
+    const { User } = require('../auth/user.model');
+    const commentWithUser = await TaskComment.findOne({
+      where: { id: comment.id },
+      include: [{
+        model: User,
+        as: 'commentUser',
+        attributes: ['id', 'full_name', 'avatar_url']
+      }]
+    });
+    return commentWithUser;
   }
 
   static async deleteComment(commentId: string, userId: string) {

@@ -160,7 +160,7 @@ export class AuthService {
       full_name: user.full_name,
       avatar_url: user.avatar_url,
       provider: user.provider,
-      created_at: user.created_at,
+      created_at: user.created_at || user.createdAt,
     };
   }
 }
