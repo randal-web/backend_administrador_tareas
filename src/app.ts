@@ -17,7 +17,6 @@ import projectRoutes from './modules/projects/project.routes';
 import habitRoutes from './modules/habits/habit.routes';
 import noteRoutes from './modules/notes/note.routes';
 import reminderRoutes from './modules/reminders/reminder.routes';
-import notificationRoutes from './modules/notifications/notification.routes';
 
 const app: Application = express();
 
@@ -61,7 +60,7 @@ app.use(morgan(config.nodeEnv === 'production' ? 'combined' : 'dev'));
 // Rate limiting
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 min
-  limit: config.nodeEnv === 'production' ? 500 : 1000,
+  limit: config.nodeEnv === 'production' ? 1000 : 5000,
   standardHeaders: 'draft-8',
   legacyHeaders: false,
   message: { error: 'Demasiadas peticiones, intenta de nuevo más tarde.' },
@@ -71,7 +70,7 @@ app.use('/api/', limiter);
 // Auth-specific stricter rate limit
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  limit: config.nodeEnv === 'production' ? 100 : 200,
+  limit: config.nodeEnv === 'production' ? 200 : 1000,
   standardHeaders: 'draft-8',
   legacyHeaders: false,
   message: { error: 'Demasiados intentos de autenticación, intenta de nuevo más tarde.' },
@@ -92,7 +91,6 @@ app.use('/api/projects', projectRoutes);
 app.use('/api/habits', habitRoutes);
 app.use('/api/notes', noteRoutes);
 app.use('/api/reminders', reminderRoutes);
-app.use('/api/notifications', notificationRoutes);
 
 // Health check
 app.get('/api/health', (_req, res) => {
