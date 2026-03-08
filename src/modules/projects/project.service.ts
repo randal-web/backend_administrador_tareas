@@ -30,7 +30,7 @@ export class ProjectService {
         const json = project.toJSON();
         return {
           ...json,
-          created_at: json.created_at || (json as unknown as Record<string, unknown>).createdAt,
+          created_at: json.created_at,
           total_tasks: totalTasks,
           done_tasks: doneTasks,
           pending_tasks: pendingTasks,
