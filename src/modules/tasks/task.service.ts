@@ -24,11 +24,20 @@ export class TaskService {
   }
 
   static async getById(taskId: string, userId: string) {
+    const { User } = require('../auth/user.model');
     const task = await Task.findOne({
       where: { id: taskId, user_id: userId },
       include: [
         { model: Subtask, as: 'subtasks' },
-        { model: TaskComment, as: 'comments' },
+        {
+          model: TaskComment,
+          as: 'comments',
+          include: [{
+            model: User,
+            as: 'commentUser',
+            attributes: ['id', 'full_name', 'avatar_url']
+          }]
+        },
         { model: Project, as: 'project', attributes: ['id', 'name', 'color_hex'] },
       ],
     });
