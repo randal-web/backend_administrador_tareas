@@ -10,14 +10,14 @@ export const getMyNotifications = async (req: Request, res: Response) => {
 export const markRead = async (req: Request, res: Response) => {
   const userId = (req as any).user.id;
   const { id } = req.params;
-  await NotificationService.markAsRead(id, userId);
+  await NotificationService.markAsRead(id as string, userId);
   res.status(204).end();
 };
 
 export const deleteNotif = async (req: Request, res: Response) => {
   const userId = (req as any).user.id;
   const { id } = req.params;
-  await NotificationService.delete(id, userId);
+  await NotificationService.delete(id as string, userId);
   res.status(204).end();
 };
 

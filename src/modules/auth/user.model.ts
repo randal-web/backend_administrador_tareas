@@ -15,7 +15,7 @@ export interface UserAttributes {
   updated_at?: Date;
 }
 
-export interface UserCreationAttributes extends Optional<UserAttributes, 'id' | 'password_hash' | 'avatar_url' | 'provider' | 'provider_id' | 'created_at' | 'updated_at'> {}
+export interface UserCreationAttributes extends Optional<UserAttributes, 'id' | 'password_hash' | 'avatar_url' | 'provider' | 'provider_id' | 'is_beta_tester' | 'role' | 'created_at' | 'updated_at'> {}
 
 export class User extends Model<UserAttributes, UserCreationAttributes> implements UserAttributes {
   public id!: string;

@@ -3,7 +3,7 @@ import { getAllUsers, updateUserPermissions } from './admin.controller';
 import { authMiddleware } from '../../middleware/auth.middleware';
 import { adminMiddleware } from '../../middleware/admin.middleware';
 
-const router = Router();
+const router: Router = Router();
 
 router.use(authMiddleware as any);
 router.use(adminMiddleware);

@@ -38,7 +38,7 @@ export const deleteReport = async (req: Request, res: Response) => {
     const userId = (req as any).user.id;
     const { id } = req.params;
     console.log('Deleting report:', id, 'for user:', userId);
-    const success = await ReportService.delete(userId, id);
+    const success = await ReportService.delete(userId, id as string);
     if (success) {
       res.status(204).end();
     } else {

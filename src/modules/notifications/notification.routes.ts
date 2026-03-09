@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { getMyNotifications, markRead, deleteNotif, sendGlobalNotification } from './notification.controller';
 import { authMiddleware } from '../../middleware/auth.middleware';
 
-const router = Router();
+const router: Router = Router();
 
 router.use(authMiddleware as any);
 

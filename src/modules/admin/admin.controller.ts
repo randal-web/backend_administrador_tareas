@@ -18,7 +18,7 @@ export const updateUserPermissions = async (req: Request, res: Response) => {
     const { id } = req.params;
     const { is_beta_tester, role } = req.body;
     
-    const user = await User.findByPk(id);
+    const user = await User.findByPk(id as string);
     if (!user) {
       res.status(404).json({ message: 'Usuario no encontrado' });
       return;

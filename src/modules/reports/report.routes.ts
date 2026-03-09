@@ -3,7 +3,7 @@ import { getReports, createReport, deleteReport } from './report.controller';
 import { authMiddleware } from '../../middleware/auth.middleware';
 import { betaTesterMiddleware } from '../../middleware/beta-tester.middleware';
 
-const router = Router();
+const router: Router = Router();
 
 router.use(authMiddleware as any);
 router.use(betaTesterMiddleware);
