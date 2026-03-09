@@ -9,6 +9,8 @@ import rateLimit from 'express-rate-limit';
 import { config } from './config';
 import { errorHandler } from './middleware/error.middleware';
 import { setupPassport } from './modules/auth/passport.config';
+import { activeUserMiddleware } from './middleware/active-user.middleware';
+import { auditMiddleware } from './middleware/audit.middleware';
 
 // Routes
 import authRoutes from './modules/auth/auth.routes';
@@ -50,8 +52,6 @@ app.use(cors({
 app.use(helmet({
   crossOriginResourcePolicy: { policy: 'cross-origin' },
   crossOriginOpenerPolicy: { policy: 'unsafe-none' },
-  crossOriginEmbedderPolicy: false,
-  contentSecurityPolicy: false,
 }));
 
 // Compression
@@ -79,8 +79,8 @@ const authLimiter = rateLimit({
   message: { error: 'Demasiados intentos de autenticación, intenta de nuevo más tarde.' },
 });
 
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: '1mb' }));
+app.use(express.urlencoded({ extended: true, limit: '1mb' }));
 app.use(cookieParser());
 
 // Passport

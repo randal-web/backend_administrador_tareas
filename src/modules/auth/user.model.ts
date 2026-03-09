@@ -11,11 +11,13 @@ export interface UserAttributes {
   provider_id: string | null;
   is_beta_tester: boolean;
   role: 'USER' | 'ADMIN';
+  is_active: boolean;
+  last_active_at: Date | null;
   created_at?: Date;
   updated_at?: Date;
 }
 
-export interface UserCreationAttributes extends Optional<UserAttributes, 'id' | 'password_hash' | 'avatar_url' | 'provider' | 'provider_id' | 'is_beta_tester' | 'role' | 'created_at' | 'updated_at'> {}
+export interface UserCreationAttributes extends Optional<UserAttributes, 'id' | 'password_hash' | 'avatar_url' | 'provider' | 'provider_id' | 'is_beta_tester' | 'role' | 'is_active' | 'last_active_at' | 'created_at' | 'updated_at'> {}
 
 export class User extends Model<UserAttributes, UserCreationAttributes> implements UserAttributes {
   public id!: string;
@@ -27,6 +29,8 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
   public provider_id!: string | null;
   public is_beta_tester!: boolean;
   public role!: 'USER' | 'ADMIN';
+  public is_active!: boolean;
+  public last_active_at!: Date | null;
   public readonly created_at!: Date;
   public readonly updated_at!: Date;
 }
@@ -77,6 +81,15 @@ User.init(
       validate: {
         isIn: [['USER', 'ADMIN']]
       }
+    },
+    is_active: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: true,
+    },
+    last_active_at: {
+      type: DataTypes.DATE,
+      allowNull: true,
     },
   },
   {

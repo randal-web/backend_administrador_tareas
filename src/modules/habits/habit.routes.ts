@@ -1,10 +1,14 @@
 import { Router, type RequestHandler } from 'express';
 import { HabitController } from './habit.controller';
 import { authMiddleware } from '../../middleware/auth.middleware';
+import { activeUserMiddleware } from '../../middleware/active-user.middleware';
+import { auditMiddleware } from '../../middleware/audit.middleware';
 
 const router: Router = Router();
 
 router.use(authMiddleware as RequestHandler);
+router.use(activeUserMiddleware as any);
+router.use(auditMiddleware as any);
 
 router.post('/', HabitController.create as RequestHandler);
 router.get('/', HabitController.getAll as RequestHandler);

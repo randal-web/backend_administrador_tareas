@@ -9,8 +9,13 @@ import { Note } from '../modules/notes/note.model';
 import { Reminder } from '../modules/reminders/reminder.model';
 import Report from '../modules/reports/report.model';
 import Notification from '../modules/notifications/notification.model';
+import { AuditLog } from '../modules/admin/audit-log.model';
 
 export function setupAssociations(): void {
+  // User -> AuditLog
+  User.hasMany(AuditLog, { foreignKey: 'user_id', as: 'audit_logs' });
+  AuditLog.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
+
   // User -> Projects
   User.hasMany(Project, { foreignKey: 'user_id', as: 'projects' });
   Project.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
@@ -60,4 +65,4 @@ export function setupAssociations(): void {
   Notification.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
 }
 
-export { User, Project, Task, Subtask, TaskComment, Habit, HabitLog, Note, Reminder, Report, Notification };
+export { User, Project, Task, Subtask, TaskComment, Habit, HabitLog, Note, Reminder, Report, Notification, AuditLog };
