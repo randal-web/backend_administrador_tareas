@@ -1,15 +1,13 @@
-import { Router } from 'express';
-import { getReports, createReport, deleteReport } from './report.controller';
+import { Router, type RequestHandler } from 'express';
+import * as ReportController from './report.controller';
 import { authMiddleware } from '../../middleware/auth.middleware';
-import { betaTesterMiddleware } from '../../middleware/beta-tester.middleware';
 
 const router: Router = Router();
 
-router.use(authMiddleware as any);
-router.use(betaTesterMiddleware);
+router.use(authMiddleware as RequestHandler);
 
-router.get('/', getReports);
-router.post('/', createReport);
-router.delete('/:id', deleteReport);
+router.get('/', ReportController.getAll as RequestHandler);
+router.post('/', ReportController.create as RequestHandler);
+router.delete('/:id', ReportController.deleteReport as RequestHandler);
 
 export default router;

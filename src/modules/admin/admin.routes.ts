@@ -3,7 +3,7 @@ import { getAllUsers, updateUserPermissions, getAuditLogs } from './admin.contro
 import { authMiddleware } from '../../middleware/auth.middleware';
 import { adminMiddleware } from '../../middleware/admin.middleware';
 
-const router = Router();
+const router: Router = Router();
 
 // All routes require authentication and admin role
 router.use(authMiddleware as any);
