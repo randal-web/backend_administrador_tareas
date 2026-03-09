@@ -8,6 +8,7 @@
     "build": "tsc",
     "start": "node dist/server.js",
     "start:prod": "NODE_ENV=production node dist/server.js",
+    "seed": "tsx src/scripts/seed.ts",
     "clean": "rimraf dist",
     "lint": "tsc --noEmit",
     "test": "echo \"Error: no test specified\" && exit 1"

@@ -141,6 +141,10 @@ export class AuthService {
   static async updateProfile(userId: string, data: { full_name?: string; avatar_url?: string }) {
     const user = await User.findByPk(userId);
     if (!user) throw new Error('Usuario no encontrado');
+    
+    // Security: Only allow updating specific fields
+    const allowedData: { full_name?: string; avatar_url?: string } = {};
+    if (data.full_name) allowedData.full_name = data.full_name;
     if (data.avatar_url) {
       const cloudName = process.env.CLOUDINARY_CLOUD_NAME || 'tu_cloud_name';
       const url = data.avatar_url;
@@ -148,8 +152,10 @@ export class AuthService {
       if (!url.startsWith(validPrefix)) {
         throw new Error('URL de avatar inválida');
       }
+      allowedData.avatar_url = data.avatar_url;
     }
-    await user.update(data);
+
+    await user.update(allowedData);
     return this.sanitizeUser(user);
   }
 
@@ -160,6 +166,8 @@ export class AuthService {
       full_name: user.full_name,
       avatar_url: user.avatar_url,
       provider: user.provider,
+      is_beta_tester: user.is_beta_tester,
+      role: user.role,
       created_at: user.created_at || user.createdAt,
     };
   }

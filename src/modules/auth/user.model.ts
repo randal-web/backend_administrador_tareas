@@ -9,6 +9,8 @@ export interface UserAttributes {
   avatar_url: string | null;
   provider: string;
   provider_id: string | null;
+  is_beta_tester: boolean;
+  role: 'USER' | 'ADMIN';
   created_at?: Date;
   updated_at?: Date;
 }
@@ -23,6 +25,8 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
   public avatar_url!: string | null;
   public provider!: string;
   public provider_id!: string | null;
+  public is_beta_tester!: boolean;
+  public role!: 'USER' | 'ADMIN';
   public readonly created_at!: Date;
   public readonly updated_at!: Date;
 }
@@ -60,6 +64,19 @@ User.init(
     provider_id: {
       type: DataTypes.STRING(255),
       allowNull: true,
+    },
+    is_beta_tester: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
+    },
+    role: {
+      type: DataTypes.STRING(10),
+      allowNull: false,
+      defaultValue: 'USER',
+      validate: {
+        isIn: [['USER', 'ADMIN']]
+      }
     },
   },
   {

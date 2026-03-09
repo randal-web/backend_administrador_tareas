@@ -7,6 +7,8 @@ import { Habit } from '../modules/habits/habit.model';
 import { HabitLog } from '../modules/habits/habit-log.model';
 import { Note } from '../modules/notes/note.model';
 import { Reminder } from '../modules/reminders/reminder.model';
+import Report from '../modules/reports/report.model';
+import Notification from '../modules/notifications/notification.model';
 
 export function setupAssociations(): void {
   // User -> Projects
@@ -48,6 +50,14 @@ export function setupAssociations(): void {
   // User -> Reminders
   User.hasMany(Reminder, { foreignKey: 'user_id', as: 'reminders' });
   Reminder.belongsTo(User, { foreignKey: 'user_id', as: 'user_reminder' });
+
+  // User -> Reports
+  User.hasMany(Report, { foreignKey: 'user_id', as: 'reports' });
+  Report.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
+
+  // User -> Notifications
+  User.hasMany(Notification, { foreignKey: 'user_id', as: 'notifications' });
+  Notification.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
 }
 
-export { User, Project, Task, Subtask, TaskComment, Habit, HabitLog, Note, Reminder };
+export { User, Project, Task, Subtask, TaskComment, Habit, HabitLog, Note, Reminder, Report, Notification };
