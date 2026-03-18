@@ -5,6 +5,7 @@ import { Subtask } from '../modules/tasks/subtask.model';
 import { TaskComment } from '../modules/tasks/task-comment.model';
 import { Habit } from '../modules/habits/habit.model';
 import { HabitLog } from '../modules/habits/habit-log.model';
+import { Goal } from '../modules/goals/goal.model';
 import { Note } from '../modules/notes/note.model';
 import { Reminder } from '../modules/reminders/reminder.model';
 import Report from '../modules/reports/report.model';
@@ -48,6 +49,10 @@ export function setupAssociations(): void {
   Habit.hasMany(HabitLog, { foreignKey: 'habit_id', as: 'logs' });
   HabitLog.belongsTo(Habit, { foreignKey: 'habit_id', as: 'habit' });
 
+  // User -> Goals
+  User.hasMany(Goal, { foreignKey: 'user_id', as: 'goals' });
+  Goal.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
+
   // User -> Notes
   User.hasMany(Note, { foreignKey: 'user_id', as: 'notes' });
   Note.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
@@ -65,4 +70,4 @@ export function setupAssociations(): void {
   Notification.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
 }
 
-export { User, Project, Task, Subtask, TaskComment, Habit, HabitLog, Note, Reminder, Report, Notification, AuditLog };
+export { User, Project, Task, Subtask, TaskComment, Habit, HabitLog, Goal, Note, Reminder, Report, Notification, AuditLog };
