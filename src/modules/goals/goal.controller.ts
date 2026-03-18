@@ -30,7 +30,7 @@ export class GoalController {
 
   static async update(req: Request, res: Response) {
     try {
-      const { id } = req.params;
+      const id = req.params.id as string;
       const user_id = req.user?.id;
       if (!user_id) return res.status(401).json({ message: 'Unauthorized' });
 
@@ -46,7 +46,7 @@ export class GoalController {
 
   static async delete(req: Request, res: Response) {
     try {
-      const { id } = req.params;
+      const id = req.params.id as string;
       const user_id = req.user?.id;
       if (!user_id) return res.status(401).json({ message: 'Unauthorized' });
 
@@ -62,7 +62,7 @@ export class GoalController {
 
   static async toggle(req: Request, res: Response) {
     try {
-      const { id } = req.params;
+      const id = req.params.id as string;
       const user_id = req.user?.id;
       if (!user_id) return res.status(401).json({ message: 'Unauthorized' });
 

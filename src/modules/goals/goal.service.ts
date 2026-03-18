@@ -2,7 +2,7 @@ import { Goal, GoalAttributes, GoalCreationAttributes } from './goal.model';
 
 export class GoalService {
   static async create(data: GoalCreationAttributes) {
-    if (data.target_date === '') data.target_date = null;
+    if ((data.target_date as any) === '') data.target_date = null;
     return await Goal.create(data);
   }
 
@@ -20,7 +20,7 @@ export class GoalService {
   static async update(id: string, user_id: string, data: Partial<GoalAttributes>) {
     const goal = await this.findById(id, user_id);
     if (!goal) return null;
-    if (data.target_date === '') data.target_date = null;
+    if ((data.target_date as any) === '') data.target_date = null;
     return await goal.update(data);
   }
 
